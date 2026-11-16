@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Papelería El Punto — Tienda en línea</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="cliente-store" data-rol="CLIENTE">
+<header class="store-topbar">
+  <a class="store-brand" href="cliente.html" aria-label="Papelería El Punto, inicio">
+    <span class="store-brand-mark">✦</span><span>EL PUNTO<small>PAPELERÍA & ESCOLAR</small></span>
+  </a>
+  <div class="store-search"><span aria-hidden="true">⌕</span><input id="buscar" placeholder="Busca cuadernos, lápices, colores..." aria-label="Buscar producto"></div>
+  <div class="store-actions">
+    <span class="store-welcome" id="quien"></span>
+    <button class="btn gris store-account" onclick="salir()">Cerrar sesión</button>
+    <a class="cart-shortcut" href="#pedido" aria-label="Ir al pedido">🛒 <span>Mi pedido</span></a>
+  </div>
+</header>
+
+<section class="store-hero">
+  <div class="hero-text">
+    <span class="hero-pill">TODO PARA TUS IDEAS</span>
+    <h1>Todo lo que necesitas<br><em>para crear y aprender.</em></h1>
+    <p>Encuentra tus útiles escolares, artículos de oficina y materiales creativos en un solo lugar.</p>
+    <a class="hero-cta" href="#catalogoProductos">Explorar productos <span>→</span></a>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
+    <div class="hero-paper paper-back"></div><div class="hero-paper paper-front"><span>IDEAS</span><b>✦</b></div>
+    <div class="hero-pencil">✎</div><div class="hero-star">✦</div>
+  </div>
+  <div class="hero-bottom-note"><span></span> Tu papelería de confianza</div>
+</section>
+
+<div class="store-layout">
+  <aside class="store-sidebar">
+    <div class="sidebar-title"><span>☷</span> CATEGORÍAS</div>
+    <button class="category-filter active" type="button" data-category="TODOS"><span>▦</span> Todos los productos <b id="countAll">0</b></button>
+    <div id="categoryFilters"></div>
+    <div class="sidebar-promo"><span>✦</span><b>Ideas que inspiran</b><small>Materiales para llevar tus proyectos más lejos.</small></div>
+  </aside>
+
+  <main class="store-main" id="catalogoProductos">
+    <div class="store-section-heading">
+      <div><span class="section-eyebrow">NUESTRA SELECCIÓN</span><h2>Explora la tienda</h2><p id="catalogSummary">Productos disponibles para ti</p></div>
+      <label class="sort-control">Ordenar por
+        <select id="ordenCatalogo" aria-label="Ordenar productos">
+          <option value="destacados">Destacados</option>
+          <option value="nombre">Nombre A-Z</option>
+          <option value="precioAsc">Precio: menor a mayor</option>
+          <option value="precioDesc">Precio: mayor a menor</option>
+        </select>
+      </label>
+    </div>
+    <div class="category-tiles">
+      <button class="category-tile tile-school" data-category="ESCOLAR" type="button"><span>✎</span><b>Escolar</b><small>Para aprender</small></button>
+      <button class="category-tile tile-office" data-category="OFICINA" type="button"><span>▤</span><b>Oficina</b><small>Organiza tus días</small></button>
+      <button class="category-tile tile-art" data-category="ARTE Y DISEÑO" type="button"><span>✿</span><b>Arte y diseño</b><small>Libera tu creatividad</small></button>
+      <button class="category-tile tile-paper" data-category="PAPELES" type="button"><span>▧</span><b>Papeles</b><small>Color y textura</small></button>
+    </div>
+    <div class="product-heading"><h3>Productos destacados</h3><span id="resultsCount"></span></div>
+    <div id="catalogo" class="product-grid" aria-live="polite"></div>
+  </main>
+
+  <aside class="order-panel" id="pedido">
+    <div class="order-heading"><div><span class="section-eyebrow">TU COMPRA</span><h2>Mi pedido <span class="cart-count" id="cartCount">0</span></h2></div><span class="order-bag">🛍</span></div>
+    <div class="order-type">
+      <label><input type="radio" name="tipo" id="tipoM" checked> <span>Recoger en tienda</span></label>
+      <label><input type="radio" name="tipo" id="tipoD"> <span>Domicilio</span></label>
+    </div>
+    <div id="panelDom" class="form order-delivery" hidden>
+      <div><label for="dir">Dirección</label><input id="dir" placeholder="Dirección de entrega"></div>
+      <div><label for="tel">Teléfono</label><input id="tel" placeholder="Número de contacto"></div>
+      <div><label for="km">Distancia (km)</label><input id="km" type="number" min="0" step="0.1" placeholder="Ej. 3.5"></div>
+      <div><button class="btn info" id="calc" type="button">Calcular envío</button></div>
+    </div>
+    <div class="cart-list-wrap"><div id="carrito" class="cart-list"></div></div>
+    <div class="totales order-totals">
+      <p><span>Subtotal</span><span id="subtotal">$0</span></p>
+      <p><span>Envío</span><span id="envio">$0</span></p>
+      <p class="grande"><span>Total</span><span id="total">$0</span></p>
+      <div class="customer-payment-method">
+        <label for="metodoPago">Método de pago</label>
+        <select id="metodoPago" required>
+          <option value="EFECTIVO">Efectivo (pagar al recibir o en tienda)</option>
+          <option value="TRANSFERENCIA">Transferencia (pendiente de confirmar)</option>
+          <option value="TARJETA">Tarjeta en tienda</option>
+        </select>
+        <small>Elige cómo prefieres pagar. No necesitas ingresar el efectivo recibido.</small>
+      </div>
+    </div>
+    <div class="order-buttons"><button class="btn oro" id="cobrar" type="button">Confirmar pedido <span>→</span></button><button class="btn gris" id="vaciar" type="button">Vaciar</button></div>
+    <div class="msg" id="msg" role="status"></div>
+    <div class="order-trust"><span>✓</span> Compra segura · Papelería El Punto</div>
+  </aside>
+</div>
+<footer class="store-footer"><span>✦ EL PUNTO</span><span>Materiales para tus grandes ideas.</span></footer>
+<script src="js/common.js"></script>
+<script src="js/pos.js"></script>
+<script>iniciarPOS(document.body.dataset.rol);</script>
+</body>
+</html>
