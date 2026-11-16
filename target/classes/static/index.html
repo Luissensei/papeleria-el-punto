@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>Papelería El Punto — Iniciar sesión</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="login-page">
+<div class="login-shell">
+  <section class="marca">
+    <div class="hero-topline"><span class="brand-mark">P<span>.</span></span><span class="brand-wordmark">PAPELERÍA <b>EL PUNTO</b></span><span class="hero-status"><i></i> Tu espacio creativo</span></div>
+    <div class="hero-copy">
+      <span class="eyebrow"><span class="eyebrow-dot"></span> PAPELERÍA · ESCOLAR · OFICINA</span>
+      <h1>Las ideas<br>empiezan <em>aquí.</em></h1>
+      <p>Todo lo que necesitas para estudiar, crear y trabajar. Administra tu tienda desde un solo lugar.</p>
+    </div>
+    <div class="hero-art" aria-hidden="true"><div class="art-glow"></div><div class="art-ring ring-one"></div><div class="art-ring ring-two"></div><div class="art-card art-card-main"><div class="art-card-top"><span>EL PUNTO</span><span class="art-spark">✦</span></div><div class="art-lines"><i></i><i></i><i></i></div><div class="art-pencil"></div><div class="art-sticker">CREA<br>ALGO<br><b>GRANDE.</b></div></div><div class="art-card art-card-small"><span class="mini-star">✳</span><b>Ideas frescas</b><small>Empieza hoy</small></div><div class="art-orbit-dot"></div></div>
+    <div class="hero-footer"><span>Cartagena, Bolívar</span><span class="footer-separator"></span><span>Un punto para cada idea.</span></div>
+    <div class="demo"><div class="demo-heading"><span>ACCESOS DE DEMOSTRACIÓN</span><small>Selecciona para autocompletar</small></div><div class="demo-accounts"><a data-u="admin" data-p="admin123" data-r="ADMIN"><span class="demo-avatar avatar-admin">A</span><span><b>Administrador</b><small>Control total</small></span><span class="demo-arrow">↗</span></a><a data-u="vendedor1" data-p="vend123" data-r="VENDEDOR"><span class="demo-avatar avatar-vendor">V</span><span><b>Vendedor</b><small>Punto de venta</small></span><span class="demo-arrow">↗</span></a><a data-u="cliente1" data-p="cli123" data-r="CLIENTE"><span class="demo-avatar avatar-client">C</span><span><b>Cliente</b><small>Tienda en línea</small></span><span class="demo-arrow">↗</span></a></div></div>
+  </section>
+  <section class="caja">
+    <div class="login-card">
+      <div class="login-card-top"><span class="login-icon">↗</span><span class="secure-label"><span></span> ACCESO SEGURO</span></div>
+      <div id="vistaLogin">
+        <span class="form-kicker">QUÉ BUENO TENERTE AQUÍ</span><h2>Bienvenido<span class="title-dot">.</span></h2>
+        <p class="form-intro">Ingresa a tu cuenta para continuar con tu espacio de trabajo.</p>
+        <label for="rol">Entrar como</label><div class="field-wrap field-select"><span class="field-icon"></span><select id="rol"><option value="ADMIN">Administrador</option><option value="VENDEDOR">Vendedor</option><option value="CLIENTE">Cliente</option></select><span class="select-chevron">⌄</span></div>
+        <label for="usuario">Usuario</label><div class="field-wrap"><span class="field-icon"></span><input id="usuario" autocomplete="username" placeholder="Escribe tu usuario"></div>
+        <label for="password">Contraseña</label><div class="field-wrap"><span class="field-icon"></span><input id="password" type="password" autocomplete="current-password" placeholder="Escribe tu contraseña"></div>
+        <div class="form-note"><span class="note-check">✓</span> Tus datos se mantienen protegidos.</div>
+        <div class="acciones"><button class="btn" id="entrar"><span>Ingresar al sistema</span><span class="btn-arrow">→</span></button><button class="btn gris" id="irRegistro">Crear cuenta de cliente <span class="btn-arrow">↗</span></button></div>
+        <div class="msg err" id="msgLogin" role="status"></div>
+      </div>
+      <div id="vistaRegistro" hidden>
+        <span class="form-kicker">ÚNETE A EL PUNTO</span><h2>Crea tu cuenta<span class="title-dot"></span></h2><p class="form-intro">Regístrate para empezar a comprar con nosotros.</p>
+        <label for="rNombre">Nombre completo</label><div class="field-wrap"><span class="field-icon"></span><input id="rNombre" placeholder="Tu nombre y apellido"></div>
+        <label for="rUsuario">Usuario</label><div class="field-wrap"><span class="field-icon"></span><input id="rUsuario" placeholder="Elige un usuario"></div>
+        <label for="rPassword">Contraseña</label><div class="field-wrap"><span class="field-icon"></span><input id="rPassword" type="password" placeholder="Crea una contraseña"></div>
+        <label for="rDireccion">Dirección</label><div class="field-wrap"><span class="field-icon"></span><input id="rDireccion" placeholder="Dirección de entrega"></div>
+        <label for="rTelefono">Teléfono</label><div class="field-wrap"><span class="field-icon"></span><input id="rTelefono" placeholder="Número de contacto"></div>
+        <div class="acciones"><button class="btn ok" id="registrar"><span>Crear cuenta</span><span class="btn-arrow">→</span></button><button class="btn gris" id="irLogin">Volver al inicio <span class="btn-arrow">↶</span></button></div>
+        <div class="msg" id="msgReg" role="status"></div>
+      </div>
+      <div class="login-card-bottom"><span>EL PUNTO <b>•</b> PAPELERÍA &amp; MÁS</span><span>© 2026</span></div>
+    </div>
+    <div class="login-help"><span class="help-bubble">?</span><span><b>¿Primera vez por aquí?</b><small>Usa los accesos de demostración o crea una cuenta de cliente.</small></span></div>
+  </section>
+</div>
+<script src="js/common.js"></script>
+<script>
+const rutas={ADMIN:'admin.html',VENDEDOR:'vendedor.html',CLIENTE:'cliente.html'};
+document.querySelectorAll('.demo-accounts a').forEach(a=>a.onclick=()=>{$('usuario').value=a.dataset.u;$('password').value=a.dataset.p;$('rol').value=a.dataset.r;document.querySelectorAll('.demo-accounts a').forEach(x=>x.classList.toggle('chosen',x===a));$('usuario').focus();});
+$('entrar').onclick=async()=>{
+  const b=$('entrar');b.classList.add('is-loading');b.disabled=true;
+  try{
+    const u=await api('/auth/login',{method:'POST',body:{usuario:$('usuario').value.trim(),password:$('password').value,rol:$('rol').value}});
+    sessionStorage.setItem('u',JSON.stringify(u));
+    location.href=rutas[u.rol];
+  }catch(e){$('msgLogin').textContent=e.message;}
+  finally{b.classList.remove('is-loading');b.disabled=false;}
+};
+$('password').onkeydown=e=>{if(e.key==='Enter')$('entrar').click();};
+$('irRegistro').onclick=()=>{$('vistaLogin').hidden=true;$('vistaRegistro').hidden=false;};
+$('irLogin').onclick=()=>{$('vistaLogin').hidden=false;$('vistaRegistro').hidden=true;};
+$('registrar').onclick=async()=>{
+  try{
+    await api('/auth/registro',{method:'POST',body:{nombre:$('rNombre').value,usuario:$('rUsuario').value.trim(),password:$('rPassword').value,direccion:$('rDireccion').value,telefono:$('rTelefono').value}});
+    $('msgReg').className='msg ok';$('msgReg').textContent='Cuenta creada. Ya puedes iniciar sesión como Cliente.';
+  }catch(e){$('msgReg').className='msg err';$('msgReg').textContent=e.message;}
+};
+</script>
+</body>
+</html>
