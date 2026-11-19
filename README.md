@@ -1,52 +1,52 @@
-# Sistema de Gestión de Inventarios "El Punto"
+# Sistema de Gestión de Inventarios — Papelería El Punto
 
-Aplicación web para la Papelería El Punto (Cartagena): inventario, ventas con factura, domicilios, nómina, gastos y proveedores, con tres interfaces según el rol (Administrador, Vendedor, Cliente).
+Aplicación web para administrar inventario, ventas, domicilios, pagos de empleados, gastos y proveedores. Incluye interfaces para administrador, vendedor y cliente.
 
-**Stack:** Java 17 · Spring Boot 3 (API REST) · MySQL · HTML + CSS + JavaScript.
+**Tecnologías:** Java 17, Spring Boot 3.3.5, Spring Data JPA, MySQL 8, HTML, CSS y JavaScript.
 
-## Cómo ejecutarlo
+## Requisitos
 
-1. Instala **JDK 17**, **Maven** y **XAMPP** (o cualquier MySQL 8).
-2. Inicia MySQL desde XAMPP.
-3. Importa `database/papeleria.sql` (en phpMyAdmin → Importar, o `mysql -u root < database/papeleria.sql`).
-4. Revisa usuario y contraseña de MySQL en `src/main/resources/application.properties`.
-5. En la carpeta del proyecto ejecuta: `mvn spring-boot:run`
-6. Abre http://localhost:8080
+- JDK 17 o superior compatible con Spring Boot 3.
+- Maven 3.6.3 o superior.
+- MySQL 8 / XAMPP con MySQL iniciado.
 
-En Visual Studio Code instala "Extension Pack for Java" y "Spring Boot Extension Pack", abre la carpeta y ejecuta `PapeleriaApplication`.
+## Instalación desde una base nueva
 
-## Cuentas de prueba
+1. Inicia MySQL desde XAMPP.
+2. Abre phpMyAdmin y selecciona **Importar**.
+3. Importa `database/papeleria.sql`. El archivo crea la base `papeleria_el_punto` si no existe y crea las tablas y datos iniciales sin borrar la base completa.
+4. Revisa `src/main/resources/application.properties`. Por defecto usa `localhost:3306`, base `papeleria_el_punto`, usuario `root` y contraseña vacía. Ajusta esos valores si tu MySQL tiene otra configuración.
+5. En la carpeta del proyecto ejecuta `mvn spring-boot:run`.
+6. Abre `http://localhost:8080`.
+
+**Importante:** el script de creación no elimina bases ni tablas existentes. Está preparado para una base nueva o una estructura compatible. Antes de ejecutar scripts SQL sobre una base con información importante, realiza una copia de seguridad.
+
+## Actualizar una base existente
+
+Si tu base ya existe y todavía no tiene la columna `venta.metodo_pago`, selecciona primero la base `papeleria_el_punto` en phpMyAdmin y ejecuta `database/actualizar_metodo_pago.sql`. La migración comprueba si la columna existe y evita intentar agregarla dos veces. No ejecutes `database/papeleria.sql` para actualizar una base en producción; ese archivo es para inicializar la estructura.
+
+## Cuentas de demostración
 
 | Rol | Usuario | Contraseña |
 |---|---|---|
-| Administrador | admin | admin123 |
-| Vendedor | vendedor1 | vend123 |
-| Cliente | cliente1 | cli123 |
+| Administrador | `admin` | `admin123` |
+| Vendedor | `vendedor1` | `vend123` |
+| Cliente | `cliente1` | `cli123` |
 
-## Documentación
+Son credenciales de demostración incluidas en el SQL inicial. No deben reutilizarse en un sistema publicado en internet.
 
-Toda la explicación (arquitectura, cada archivo, base de datos, API, cálculo del domicilio, limitaciones) está en [`docs/DOCUMENTACION.md`](docs/DOCUMENTACION.md).
+## Estructura principal
 
-## Subirlo a GitHub
+- `src/main/java`: aplicación Spring Boot, controladores, entidades, repositorios y servicios.
+- `src/main/resources/static`: pantallas, estilos, scripts e imágenes.
+- `database/papeleria.sql`: creación inicial de base de datos, tablas y datos de demostración.
+- `database/actualizar_metodo_pago.sql`: migración compatible para bases anteriores.
+- `docs/DOCUMENTACION.md`: documentación técnica y funcional.
 
-```bash
-git init
-git add .
-git commit -m "Proyecto El Punto: versión inicial"
-git branch -M main
-git remote add origin https://github.com/TU_USUARIO/TU_REPOSITORIO.git
-git push -u origin main
-```
+## Repositorio
 
-## Actualización: métodos de pago y miniaturas del carrito
+El proyecto se versiona con Git. Los archivos generados de Maven (`target/`) están excluidos mediante `.gitignore` y no deben subirse al repositorio.
 
-- La interfaz del cliente permite seleccionar `EFECTIVO`, `TRANSFERENCIA` o `TARJETA`; no solicita efectivo recibido ni calcula cambio.
-- El punto de venta del vendedor conserva el registro del efectivo recibido y el cálculo del cambio.
-- Las ventas guardan el método de pago en la columna `venta.metodo_pago`.
-- Las miniaturas del carrito muestran la imagen configurada en el producto; si no carga, se muestra un icono de categoría como respaldo.
+## Alcance del pago
 
-### Si ya tienes creada la base de datos
-
-Como este proyecto usa `spring.jpa.hibernate.ddl-auto=none`, ejecuta una sola vez el archivo `database/actualizar_metodo_pago.sql` en la base de datos `papeleria`. Si vas a crear una base nueva desde cero, el esquema actualizado `database/papeleria.sql` ya incluye la columna.
-
-Nota: seleccionar transferencia o tarjeta registra la preferencia del cliente; no procesa automáticamente el pago ni confirma una transferencia.
+La aplicación registra el método elegido (efectivo, transferencia o tarjeta); no procesa pagos electrónicos ni verifica automáticamente transferencias.

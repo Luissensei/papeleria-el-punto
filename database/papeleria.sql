@@ -1,9 +1,8 @@
-DROP DATABASE IF EXISTS papeleria_el_punto;
-CREATE DATABASE papeleria_el_punto CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS papeleria_el_punto CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE papeleria_el_punto;
 
 -- Personas que usan el sistema: administradores, vendedores (empleados) y clientes. El campo rol define qué interfaz ven.
-CREATE TABLE usuario (
+CREATE TABLE IF NOT EXISTS usuario (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
   usuario VARCHAR(50) NOT NULL UNIQUE,
@@ -16,7 +15,7 @@ CREATE TABLE usuario (
 ) ENGINE=InnoDB;
 
 -- Empresas que surten mercancía a la papelería. Cada producto puede apuntar a su proveedor principal.
-CREATE TABLE proveedor (
+CREATE TABLE IF NOT EXISTS proveedor (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
   nit VARCHAR(20) UNIQUE,
@@ -27,7 +26,7 @@ CREATE TABLE proveedor (
 ) ENGINE=InnoDB;
 
 -- Catálogo e inventario: cada fila es un artículo con su precio de venta, su costo, su existencia y su imagen.
-CREATE TABLE producto (
+CREATE TABLE IF NOT EXISTS producto (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   codigo VARCHAR(20) NOT NULL UNIQUE,
   nombre VARCHAR(100) NOT NULL,
@@ -43,7 +42,7 @@ CREATE TABLE producto (
 ) ENGINE=InnoDB;
 
 -- Encabezado de cada factura: quién vendió, a quién, cuándo, el tipo (mostrador o domicilio) y los datos del envío.
-CREATE TABLE venta (
+CREATE TABLE IF NOT EXISTS venta (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   numero_factura VARCHAR(20) UNIQUE,
   fecha DATETIME NOT NULL,
@@ -62,7 +61,7 @@ CREATE TABLE venta (
 ) ENGINE=InnoDB;
 
 -- Líneas de cada factura: qué producto, cuántas unidades y a qué precio y costo se vendió en ese momento.
-CREATE TABLE detalle_venta (
+CREATE TABLE IF NOT EXISTS detalle_venta (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   venta_id BIGINT NOT NULL,
   producto_id BIGINT NOT NULL,
@@ -74,7 +73,7 @@ CREATE TABLE detalle_venta (
 ) ENGINE=InnoDB;
 
 -- Pagos de nómina hechos a los empleados vendedores, con salario base, bonificación y deducciones.
-CREATE TABLE pago_empleado (
+CREATE TABLE IF NOT EXISTS pago_empleado (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   empleado_id BIGINT NOT NULL,
   periodo VARCHAR(30) NOT NULL,
@@ -87,7 +86,7 @@ CREATE TABLE pago_empleado (
 ) ENGINE=InnoDB;
 
 -- Encabezado de los gastos de funcionamiento del negocio (arriendo, servicios, aseo, etc.).
-CREATE TABLE gasto_operativo (
+CREATE TABLE IF NOT EXISTS gasto_operativo (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   fecha DATE NOT NULL,
   categoria VARCHAR(50) NOT NULL,
@@ -95,7 +94,7 @@ CREATE TABLE gasto_operativo (
 ) ENGINE=InnoDB;
 
 -- Líneas de cada gasto operativo: concepto, cantidad y valor unitario.
-CREATE TABLE detalle_gasto (
+CREATE TABLE IF NOT EXISTS detalle_gasto (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   gasto_id BIGINT NOT NULL,
   concepto VARCHAR(100) NOT NULL,
@@ -104,29 +103,45 @@ CREATE TABLE detalle_gasto (
   FOREIGN KEY (gasto_id) REFERENCES gasto_operativo(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
-INSERT INTO usuario (nombre, usuario, password, rol, salario, direccion, telefono) VALUES
+INSERT IGNORE INTO usuario (nombre, usuario, password, rol, salario, direccion, telefono) VALUES
 ('Carlos Ramírez','admin','admin123','ADMIN',0,'Cartagena Centro','3001234567'),
 ('Ana González','vendedor1','vend123','VENDEDOR',1800000,'Calle 5 #10-20','3109876543'),
-('Pedro Martínez','vendedor2','vend456','VENDEDOR',1800000,'Carrera 8 #3-15','3205551234'),
+('Pedro Martínez','vendedor2','vend456', 'VENDEDOR',1800000,'Carrera 8 #3-15','3205551234'),
 ('Laura Torres','cliente1','cli123','CLIENTE',0,'Av. Blas de Lezo #22','3157654321'),
 ('Diego Herrera','cliente2','cli456','CLIENTE',0,'Calle 30 #5-40','3126543210');
 
-INSERT INTO proveedor (nombre, nit, telefono, email, direccion) VALUES
+INSERT IGNORE INTO proveedor (nombre, nit, telefono, email, direccion) VALUES
 ('Distribuidora Escolar del Caribe','900111222-1','6055551111','ventas@descaribe.co','Zona Industrial Mamonal'),
 ('Papeles y Más S.A.S.','900333444-5','6055552222','pedidos@papelesymas.co','Barrio Manga');
 
-INSERT INTO producto (codigo, nombre, categoria, precio_venta, precio_costo, stock, stock_minimo, proveedor_id) VALUES
-('P001','Cuaderno Norma Grande','Cuadernos',3500,2200,45,5,1),
-('P002','Lápiz Mongol 2B','Escritura',500,300,120,10,1),
-('P003','Borrador Pelikan','Escritura',800,500,60,8,1),
-('P004','Colores Faber 12und','Arte',8500,5500,30,5,1),
-('P005','Resaltador Stabilo','Marcadores',2500,1500,4,5,2),
-('P006','Carpeta Argollada','Archivos',12000,7500,25,5,2),
-('P007','Tijeras Maped','Manualidades',4500,2800,20,5,2),
-('P008','Pegante Colbón','Adhesivos',3200,1800,35,5,2),
-('P009','Block Iris','Papel',6000,3800,3,5,2),
-('P010','Resma Papel Carta','Papel',14000,9000,18,5,2);
+INSERT IGNORE INTO producto (codigo, nombre, categoria, precio_venta, precio_costo, stock, stock_minimo, proveedor_id)
+SELECT datos.codigo, datos.nombre, datos.categoria, datos.precio_venta, datos.precio_costo,
+       datos.stock, datos.stock_minimo, p.id
+FROM (
+  SELECT 'P001' codigo,'Cuaderno Norma Grande' nombre,'Cuadernos' categoria,3500 precio_venta,2200 precio_costo,45 stock,5 stock_minimo,'900111222-1' nit
+  UNION ALL SELECT 'P002','Lápiz Mongol 2B','Escritura',500,300,120,10,'900111222-1'
+  UNION ALL SELECT 'P003','Borrador Pelikan','Escritura',800,500,60,8,'900111222-1'
+  UNION ALL SELECT 'P004','Colores Faber 12und','Arte',8500,5500,30,5,'900111222-1'
+  UNION ALL SELECT 'P005','Resaltador Stabilo','Marcadores',2500,1500,4,5,'900333444-5'
+  UNION ALL SELECT 'P006','Carpeta Argollada','Archivos',12000,7500,25,5,'900333444-5'
+  UNION ALL SELECT 'P007','Tijeras Maped','Manualidades',4500,2800,20,5,'900333444-5'
+  UNION ALL SELECT 'P008','Pegante Colbón','Adhesivos',3200,1800,35,5,'900333444-5'
+  UNION ALL SELECT 'P009','Block Iris','Papel',6000,3800,3,5,'900333444-5'
+  UNION ALL SELECT 'P010','Resma Papel Carta','Papel',14000,9000,18,5,'900333444-5'
+) datos
+JOIN proveedor p ON p.nit = datos.nit;
 
-INSERT INTO gasto_operativo (fecha, categoria, descripcion) VALUES ('2026-10-01','Servicios','Servicios públicos de octubre');
-INSERT INTO detalle_gasto (gasto_id, concepto, cantidad, valor_unitario) VALUES
-(1,'Energía eléctrica',1,185000),(1,'Agua',1,62000),(1,'Internet',1,90000);
+-- El gasto de ejemplo se inserta una sola vez y sus detalles se enlazan por una clave descriptiva.
+INSERT INTO gasto_operativo (fecha, categoria, descripcion)
+SELECT '2026-10-01','Servicios','Servicios públicos de octubre'
+WHERE NOT EXISTS (SELECT 1 FROM gasto_operativo WHERE descripcion='Servicios públicos de octubre');
+INSERT INTO detalle_gasto (gasto_id, concepto, cantidad, valor_unitario)
+SELECT g.id, d.concepto, 1, d.valor
+FROM gasto_operativo g
+JOIN (
+  SELECT 'Energía eléctrica' concepto,185000 valor
+  UNION ALL SELECT 'Agua',62000
+  UNION ALL SELECT 'Internet',90000
+) d
+WHERE g.descripcion='Servicios públicos de octubre'
+  AND NOT EXISTS (SELECT 1 FROM detalle_gasto x WHERE x.gasto_id=g.id AND x.concepto=d.concepto);
